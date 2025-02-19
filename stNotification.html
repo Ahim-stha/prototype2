@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom</title>
+    <link rel="stylesheet" href="./stCommon.css">
+    <link rel="stylesheet" href="./profileBox.css">
+</head>
+<body>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        Welcome Username! Hope you're having a wonderful day :)
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="stHome.html">Home</a>
+                <a href="stMyClub.html">My Club</a>
+                <a href="stExploreClub.html">Explore Club</a>
+                <a href="stDiscussion.html">Discussion</a>
+                <a href="stEvents.html">Events</a>
+                <a href="stResources.html">Resources</a>
+                <a href="#" class="active">Notifications</a>
+                
+                <a href="stPolls.html">Polls</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>
+            </div>
+            
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script src="profileBox.js"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        © Club Member Engagement And Communication Portal. All Rights Reserved!
+    </footer>
+
+</body>
+</html>

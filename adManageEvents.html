@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Events</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="./adCommon.css">
+    <link rel="stylesheet" href="./adProfileBox.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .edit-button,
+        .save-button,
+        .delete-button,
+        .add-button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 5px;
+            /* Add spacing between buttons */
+        }
+
+        .save-button {
+            background-color: #008CBA;
+            /* Blue */
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            /* Red */
+        }
+
+        .add-button {
+            background-color: #e77304;
+            /* Orange */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="welcome-banner">
+        Welcome Admin! Here's your dashboard overview.
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="adHome.html">Dashboard</a>
+                <a href="adManageClubs.html" >Manage Clubs</a>
+                <a href="adManageUsers.html">Manage Users</a>
+                <a href="#" class="active">Manage Events</a>
+                <a href="#">Settings</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>             
+            </div>
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <h1>Manage Events</h1>
+
+    <!-- Add Event Form -->
+    <div>
+        <h2>Add New Event</h2>
+        <input type="text" id="newEventTitle" placeholder="Title">
+        <input type="text" id="newEventDescription" placeholder="Description">
+        <input type="datetime-local" id="newEventDate" placeholder="Event Date">
+        <input type="text" id="newEventLocation" placeholder="Location">
+        <input type="number" id="newEventClubID" placeholder="Club ID">
+        <input type="number" id="newEventCreatedBy" placeholder="Created By (User ID)">
+
+        <button class="add-button" onclick="addEvent()">Add Event</button>
+    </div>
+
+    <!-- Events Table -->
+    <table id="eventTable">
+        <thead>
+            <tr>
+                <th>EventID</th>
+                <th>ClubID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>EventDate</th>
+                <th>Location</th>
+                <th>CreatedBy</th>
+                <th>CreatedDate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Event data will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const eventTable = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
+
+            // Function to fetch events data from the server
+            async function fetchEvents() {
+                try {
+                    const response = await fetch('/admin/events');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch events');
+                    }
+                    const events = await response.json();
+                    populateTable(events);
+                } catch (error) {
+                    console.error('Error fetching events:', error);
+                    alert('Failed to load events.');
+                }
+            }
+
+            // Function to populate the table with event data
+            function populateTable(events) {
+                eventTable.innerHTML = ''; // Clear existing rows
+
+                events.forEach(event => {
+                    let row = eventTable.insertRow();
+                    let eventIdCell = row.insertCell(0);
+                    let clubIdCell = row.insertCell(1);
+                    let titleCell = row.insertCell(2);
+                    let descriptionCell = row.insertCell(3);
+                    let eventDateCell = row.insertCell(4);
+                    let locationCell = row.insertCell(5);
+                    let createdByCell = row.insertCell(6);
+                    let createdDateCell = row.insertCell(7); // New cell for CreatedDate
+                    let actionsCell = row.insertCell(8);
+
+                    eventIdCell.textContent = event.EventID;
+                    clubIdCell.textContent = event.ClubID;
+                    titleCell.textContent = event.Title;
+                    descriptionCell.textContent = event.Description;
+                    eventDateCell.textContent = new Date(event.EventDate).toLocaleString();
+                    locationCell.textContent = event.Location;
+                    createdByCell.textContent = event.CreatedBy;
+                    createdDateCell.textContent = new Date(event.CreatedDate).toLocaleString(); // Format date and time
+
+                    // Add Edit button
+                    let editButton = document.createElement('button');
+                    editButton.textContent = 'Edit';
+                    editButton.className = 'edit-button';
+                    editButton.addEventListener('click', () => enableEdit(row, event));
+                    actionsCell.appendChild(editButton);
+
+                    // Add Delete button
+                    let deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.addEventListener('click', () => deleteEvent(event.EventID));
+                    actionsCell.appendChild(deleteButton);
+                });
+            }
+
+            function enableEdit(row, event) {
+                // Make the cells editable
+                let clubIdCell = row.cells[1];
+                let titleCell = row.cells[2];
+                let descriptionCell = row.cells[3];
+                let eventDateCell = row.cells[4];
+                let locationCell = row.cells[5];
+                let createdByCell = row.cells[6];
+
+                clubIdCell.contentEditable = true;
+                titleCell.contentEditable = true;
+                descriptionCell.contentEditable = true;
+                eventDateCell.contentEditable = true;
+                locationCell.contentEditable = true;
+                createdByCell.contentEditable = true;
+
+                // Change Edit button to Save button
+                let actionsCell = row.cells[8];
+                actionsCell.innerHTML = ''; // Clear existing buttons
+
+                let saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.className = 'save-button';
+                saveButton.addEventListener('click', async () => {
+                    const updatedEvent = {
+                        EventID: event.EventID,
+                        ClubID: clubIdCell.textContent,
+                        Title: titleCell.textContent,
+                        Description: descriptionCell.textContent,
+                        EventDate: new Date(eventDateCell.textContent).toISOString(),
+                        Location: locationCell.textContent,
+                        CreatedBy: createdByCell.textContent
+                    };
+
+                    try {
+                        const response = await fetch('/admin/events/' + event.EventID, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedEvent)
+                        });
+
+                        if (response.ok) {
+                            alert('Event updated successfully!');
+                            fetchEvents(); // Refresh the table
+                        } else {
+                            alert('Failed to update event.');
+                        }
+                    } catch (error) {
+                        console.error('Error updating event:', error);
+                        alert('Failed to update event.');
+                    } finally {
+                        // Disable editing after save
+                        clubIdCell.contentEditable = false;
+                        titleCell.contentEditable = false;
+                        descriptionCell.contentEditable = false;
+                        eventDateCell.contentEditable = false;
+                        locationCell.contentEditable = false;
+                        createdByCell.contentEditable = false;
+
+                        // Add Delete button after saving/cancelling
+                        let deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.className = 'delete-button';
+                        deleteButton.addEventListener('click', () => deleteEvent(event.EventID));
+                        actionsCell.appendChild(deleteButton);
+                    }
+                });
+                actionsCell.appendChild(saveButton);
+            }
+
+            async function deleteEvent(eventId) {
+                if (confirm('Are you sure you want to delete this event?')) {
+                    try {
+                        const response = await fetch('/admin/events/' + eventId, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            alert('Event deleted successfully!');
+                            fetchEvents(); // Refresh the table
+                        } else {
+                            alert('Failed to delete event.');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting event:', error);
+                        alert('Failed to delete event.');
+                    }
+                }
+            }
+
+            async function addEvent() {
+                const eventTitle = document.getElementById('newEventTitle').value.trim();
+                const eventDescription = document.getElementById('newEventDescription').value.trim();
+                const eventDate = new Date(document.getElementById('newEventDate').value.trim()).toISOString();
+                const eventLocation = document.getElementById('newEventLocation').value.trim();
+                const eventClubID = document.getElementById('newEventClubID').value.trim();
+                const eventCreatedBy = document.getElementById('newEventCreatedBy').value.trim();
+
+                // Validate input fields
+                if (!eventTitle || !eventDescription || !eventDate || !eventLocation || !eventClubID || !eventCreatedBy) {
+                    alert('Please fill in all event details.');
+                    return;
+                }
+
+                // Create the event object to send to the backend
+                const newEvent = {
+                    ClubID: eventClubID,
+                    Title: eventTitle,
+                    Description: eventDescription,
+                    EventDate: eventDate,
+                    Location: eventLocation,
+                    CreatedBy: eventCreatedBy
+                };
+
+                try {
+                    // Send the event data to the backend using a POST request
+                    const response = await fetch('/admin/events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newEvent)
+                    });
+
+                    // Check if the event was successfully added
+                    if (response.ok) {
+                        alert('Event added successfully!');
+                        // Clear input fields after successful addition
+                        document.getElementById('newEventTitle').value = '';
+                        document.getElementById('newEventDescription').value = '';
+                        document.getElementById('newEventDate').value = '';
+                        document.getElementById('newEventLocation').value = '';
+                        document.getElementById('newEventClubID').value = '';
+                        document.getElementById('newEventCreatedBy').value = '';
+
+                        // Refresh the event table
+                        fetchEvents();
+                    } else {
+                        alert('Failed to add event.');
+                    }
+                } catch (error) {
+                    console.error('Error adding event:', error);
+                    alert('Failed to add event.');
+                }
+            }
+
+            fetchEvents(); // Load events when page is loaded
+        });
+    </script>
+    <script src="profileBox.js"></script>
+    <footer class="footer">
+        © Club Member Engagement And Communication Portal. All Rights Reserved!
+    </footer>
+</body>
+
+</html>

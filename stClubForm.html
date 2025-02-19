@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom</title>
+    <link rel="stylesheet" href="./stCommon.css">
+    <link rel="stylesheet" href="./stClubForm.css">
+    <link rel="stylesheet" href="./profileBox.css">
+</head>
+<body>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        Welcome Username! Hope you're having a wonderful day :)
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="stHome.html">Home</a>
+                <a href="#" class="active">My Club</a>
+                <a href="stExploreClub.html">Explore Club</a>
+                <a href="stDiscussion.css">Discussion</a>
+                <a href="stEvents.html">Events</a>
+                <a href="stResources.html">Resources</a>
+                <a href="stNotification.html">Notifications</a>
+                <a href="stPolls.html">Polls</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>
+            </div>
+            
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <main>
+        <div class="form-container">
+            <h2>Create a Club</h2>
+            <form action="submit_club.php" method="POST">
+                
+                <!-- Club Information -->
+                <label for="clubName">Club Name:</label>
+                <input type="text" id="clubName" name="clubName" required>
+        
+                <label for="clubDesc">Club Description:</label>
+                <textarea id="clubDesc" name="clubDesc" rows="4" required></textarea>
+        
+                <label for="category">Club Category:</label>
+                <select id="category" name="category">
+                    <option value="sports">Sports</option>
+                    <option value="tech">Technology</option>
+                    <option value="arts">Arts</option>
+                    <option value="academic">Academic</option>
+                    <option value="social">Social</option>
+                </select>
+        
+                <label for="meetingFreq">Meeting Frequency:</label>
+                <select id="meetingFreq" name="meetingFreq">
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Bi-Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+        
+                <!-- Founder & Leadership -->
+                <label for="founderName">Founder’s Name:</label>
+                <input type="text" id="founderName" name="founderName" required>
+        
+                <label for="founderEmail">Founder’s Email:</label>
+                <input type="email" id="founderEmail" name="founderEmail" required>
+        
+                <label for="presidentName">Club President Name:</label>
+                <input type="text" id="presidentName" name="presidentName">
+        
+                <label for="vicePresident">Club Vice President:</label>
+                <input type="text" id="vicePresident" name="vicePresident">
+        
+                <!-- Membership Details -->
+                <label for="maxMembers">Max Number of Members:</label>
+                <input type="number" id="maxMembers" name="maxMembers">
+        
+                <label for="membershipFee">Membership Fee ($):</label>
+                <input type="number" id="membershipFee" name="membershipFee">
+        
+                <!-- Club Rules -->
+                <label for="codeOfConduct">Code of Conduct (Optional):</label>
+                <input type="file" id="codeOfConduct" name="codeOfConduct">
+        
+                <label>
+                    
+                    I agree to the club's terms and conditions.<input type="checkbox" name="agree" required>
+                </label>
+        
+                <!-- Social Media & Additional Info -->
+                <label for="socialMedia">Social Media Link (Optional):</label>
+                <input type="url" id="socialMedia" name="socialMedia">
+        
+                <label for="clubLogo">Upload Club Logo (Optional):</label>
+                <input type="file" id="clubLogo" name="clubLogo">
+        
+                <label for="additionalNotes">Additional Notes:</label>
+                <textarea id="additionalNotes" name="additionalNotes" rows="3"></textarea>
+        
+                <button class = "submit" type="submit">Submit Club Application</button>
+        
+            </form>
+        </div>
+    </main>
+    <script src="profileBox.js"></script>
+
+    
+    <!-- Footer -->
+    <footer class="footer">
+        © Club Member Engagement And Communication Portal. All Rights Reserved!
+    </footer>
+
+</body>
+</html>

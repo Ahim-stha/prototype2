@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom</title>
+    <link rel="stylesheet" href="./stCommon.css">
+    <link rel="stylesheet" href="./stHome.css">
+    <link rel="stylesheet" href="./profileBox.css">
+</head>
+<body>
+    <!-- Success Alert -->
+    <div id="successAlert" style="display: none; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin: 20px; border-radius: 5px; font-family: Arial, sans-serif;">
+        <span style="font-size: 20px; margin-right: 10px;">✔️</span> Signup Successful!
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <!-- Username will be injected here dynamically -->
+        Welcome username!  Hope you're having a wonderful day :)
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="stMyClub.html">My Club</a>
+                <a href="stExploreClub.html">Explore Club</a>
+                <a href="stDiscussion.html">Discussion</a>
+                <a href="stEvents.html">Events</a>
+                <a href="stResources.html">Resources</a>
+                <a href="stNotification.html">Notifications</a>
+                <a href="stPolls.html">Polls</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>             
+            </div>
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <main>
+        <div class="program-grid">
+            <div class="program-card">
+                <div class="program-thumbnail"></div>
+                <h3>Program 1</h3>
+            </div>
+            <div class="program-card">
+                <div class="program-thumbnail"></div>
+                <h3>Program 2</h3>
+            </div>
+            <div class="program-card">
+                <div class="program-thumbnail"></div>
+                <h3>Program 3</h3>
+            </div>
+            <div class="program-card">
+                <div class="program-thumbnail"></div>
+                <h3>Program 4</h3>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © Club Member Engagement And Communication Portal. All Rights Reserved!
+    </footer>
+    <script src="profileBox.js"></script>
+
+    <script>
+        // Check if the URL contains the signup success parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('signup') === 'success') {
+            const alertBox = document.getElementById('successAlert');
+            alertBox.style.display = 'block'; // Show the success alert
+            
+            // Hide the alert after 3 seconds
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+
+            // Clear the query parameter to prevent showing the alert on refresh
+            history.replaceState(null, '', window.location.pathname);
+        }
+        
+
+
+    </script>
+</body>
+</html>

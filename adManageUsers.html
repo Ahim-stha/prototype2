@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="./adCommon.css">
+    <link rel="stylesheet" href="./adProfileBox.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .edit-button, .save-button, .delete-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .save-button {
+            background-color: #008CBA; /* Blue */
+        }
+        .delete-button {
+            background-color: #f44336; /* Red */
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-banner">
+        Welcome Admin! Here's your dashboard overview.
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="adHome.html">Dashboard</a>
+                <a href="adManageClubs.html" >Manage Clubs</a>
+                <a href="adManageUsers.html"class="active">Manage Users</a>
+                <a href="adManageEvents.html">Manage Events</a>
+                <a href="#">Settings</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>             
+            </div>
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <h1>Manage Users</h1>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User data will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+
+            // Function to fetch user data from the server
+            async function fetchUsers() {
+                try {
+                    const response = await fetch('/admin/users'); // Corrected route
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch users');
+                    }
+                    const users = await response.json();
+                    populateTable(users);
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                    alert('Failed to load users.');
+                }
+            }
+
+            // Function to populate the table with user data
+            function populateTable(users) {
+                userTable.innerHTML = ''; // Clear existing rows
+
+                users.forEach(user => {
+                    let row = userTable.insertRow();
+                    let idCell = row.insertCell(0);
+                    let nameCell = row.insertCell(1);
+                    let emailCell = row.insertCell(2);
+                    let roleCell = row.insertCell(3);
+                    let actionsCell = row.insertCell(4);
+
+                    idCell.textContent = user.UserID; // Assuming your ID column is named UserID
+                    nameCell.textContent = user.Name;
+                    emailCell.textContent = user.Email;
+                    roleCell.textContent = user.Role;
+
+                    // Add Edit button
+                    let editButton = document.createElement('button');
+                    editButton.textContent = 'Edit';
+                    editButton.className = 'edit-button';
+                    editButton.addEventListener('click', () => enableEdit(row, user));
+                    actionsCell.appendChild(editButton);
+
+                    // Add Delete button
+                    let deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.addEventListener('click', () => deleteUser(user.UserID));
+                    actionsCell.appendChild(deleteButton);
+                });
+            }
+
+            function enableEdit(row, user) {
+                // Make the name, email, and role cells editable
+                let nameCell = row.cells[1];
+                let emailCell = row.cells[2];
+                let roleCell = row.cells[3];
+
+                nameCell.contentEditable = true;
+                emailCell.contentEditable = true;
+                roleCell.contentEditable = true;
+
+                // Change Edit button to Save button
+                let actionsCell = row.cells[4];
+                actionsCell.innerHTML = ''; // Clear existing buttons
+
+                let saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.className = 'save-button';
+                saveButton.addEventListener('click', async () => {
+                    const updatedUser = {
+                        UserID: user.UserID, // Ensure you have the user's ID
+                        Name: nameCell.textContent,
+                        Email: emailCell.textContent,
+                        Role: roleCell.textContent
+                    };
+
+                    try {
+                        const response = await fetch('/admin/users/' + user.UserID, {  // Use the correct user ID
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedUser)
+                        });
+
+                        if (response.ok) {
+                            alert('User updated successfully!');
+                            //Re-fetch data to refresh the table
+                            fetchUsers();
+                        } else {
+                            alert('Failed to update user.');
+                        }
+                    } catch (error) {
+                        console.error('Error updating user:', error);
+                        alert('Failed to update user.');
+                    } finally {
+                        // Disable editing after save
+                        nameCell.contentEditable = false;
+                        emailCell.contentEditable = false;
+                        roleCell.contentEditable = false;
+
+                        // Add Delete button after saving/cancelling
+                        let deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.className = 'delete-button';
+                        deleteButton.addEventListener('click', () => deleteUser(user.UserID));
+                        actionsCell.appendChild(deleteButton);
+                    }
+                });
+                actionsCell.appendChild(saveButton);
+            }
+
+            async function deleteUser(userId) {
+                if (confirm('Are you sure you want to delete this user?')) {
+                    try {
+                        const response = await fetch('/admin/users/' + userId, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            alert('User deleted successfully!');
+                            fetchUsers(); // Refresh the table
+                        } else {
+                            alert('Failed to delete user.');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting user:', error);
+                        alert('Failed to delete user.');
+                    }
+                }
+            }
+
+            // Initial fetch of users when the page loads
+            fetchUsers();
+        });
+    </script>
+    <script src="profileBox.js"></script>
+        <footer class="footer">
+            © Club Member Engagement And Communication Portal. All Rights Reserved!
+        </footer>
+</body>
+</html>

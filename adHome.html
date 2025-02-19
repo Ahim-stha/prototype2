@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="./adHome.css">
+    <link rel="stylesheet" href="./adProfileBox.css">
+</head>
+<body>
+    <!-- Success Alert -->
+    <div id="successAlert" class="success-alert">
+        <span class="success-icon">✔️</span> Login Successful!
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        Welcome Admin! Here's your dashboard overview.
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="#" class="active">Dashboard</a>
+                <a href="adManageClubs.html">Manage Clubs</a>
+                <a href="adManageUsers.html">Manage Users</a>
+                <a href="adManageEvents.html">Manage Events</a>
+                <a href="#">Settings</a>
+                <button class="icon-button" onclick="toggleProfile()">&#x1F464;</button>             
+            </div>
+        </div>
+    </nav>
+    <!-- Profile Box -->
+    <div id="profileBox" class="profile-box">
+        <div class="profile-header">
+            <span class="profile-icon">&#x1F464;</span>
+        </div>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Role:</strong> Member</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <main>
+        <div class="admin-dashboard">
+            <div class="admin-card">
+                <h3>Total Users</h3>
+                <p>1,234</p>
+            </div>
+            <div class="admin-card">
+                <h3>Active Clubs</h3>
+                <p>56</p>
+            </div>
+            <div class="admin-card">
+                <h3>Upcoming Events</h3>
+                <p>12</p>
+            </div>
+            <div class="admin-card">
+                <h3>New Messages</h3>
+                <p>78</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © Club Member Engagement And Communication Portal. All Rights Reserved!
+    </footer>
+
+    <script>
+        // Check if the URL contains the login success parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('login') === 'success') {
+            const alertBox = document.getElementById('successAlert');
+            alertBox.style.display = 'block'; // Show the success alert
+            
+            // Hide the alert after 3 seconds
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+
+            // Clear the query parameter to prevent showing the alert on refresh
+            history.replaceState(null, '', window.location.pathname);
+        }
+    </script>
+    <script src="profileBox.js"></script>
+</body>
+</html>

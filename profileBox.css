@@ -1,0 +1,31 @@
+.profile-box {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 85px; /* Adjust to position it below the navbar */
+    right: 250px;
+    background-color: #eaeaea;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    text-align: center;
+}
+
+.profile-header {
+    margin-bottom: 15px;
+}
+
+.profile-icon {
+    width: 40px;  /* Adjust the size of the icon */
+    height: 40px; /* Adjust the size of the icon */
+    border-radius: 50%; /* Makes the image round */
+    margin-bottom: 10px;
+}
+
+.profile-box p {
+    margin: 5px 0;
+}
+
+.profile-box button {
+    margin-top: 10px;
+}

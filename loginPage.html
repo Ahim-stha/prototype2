@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Member Engagement and Communication Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="./loginPage.css">
+</head>
+<body>
+    
+    <div class="container" id="container">
+        <!-- Sign Up Form -->
+        <div class="form-container sign-up">
+            <form id="signUpForm">
+                <h1>Create Account</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your email for registration</span>
+                <input id="username" type="text" placeholder="Name" required>
+                <input id="email" type="email" placeholder="Email" required>
+                <input id="password" type="password" placeholder="Password" required>
+                <input id="confirmPassword" type="password" placeholder="Confirm Password" required>
+                <select id="role" required>
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Sign In Form -->
+        <div class="form-container sign-in">
+            <form id="loginForm">
+                <h1>Sign In</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your email and password</span>
+                <input id="loginEmail" type="email" placeholder="Email" required>
+                <input id="loginPassword" type="password" placeholder="Password" required>
+                <select id="loginRole" required>
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+
+        <!-- Toggle Panels -->
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome Back!</h1>
+                    <p>Enter your personal details to use all site features</p>
+                    <button class="hidden" id="login">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Register with your personal details to use all site features</p>
+                    <button class="hidden" id="register">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>© Niagara College Toronto. All Rights Reserved!</footer>
+
+    <!-- JavaScript -->
+    <script>
+        const container = document.getElementById('container');
+        const registerBtn = document.getElementById('register');
+        const loginBtn = document.getElementById('login');
+
+        registerBtn.addEventListener('click', () => {
+            container.classList.add("active");
+        });
+
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove("active");
+        });
+
+        document.getElementById("signUpForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            const formData = {
+                username: document.getElementById("username").value,
+                email: document.getElementById("email").value,
+                password: password,
+                role: document.getElementById("role").value
+            };
+
+            try {
+                const response = await fetch('/loginPage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    window.location.href = '/loginPage.html?signup=success';
+                } else {
+                    alert('Signup failed!');
+                }
+            } catch (error) {
+                alert('Signup failed!');
+                console.error('Error:', error);
+            }
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                email: document.getElementById("loginEmail").value,
+                password: document.getElementById("loginPassword").value,
+                role: document.getElementById("loginRole").value
+            };
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('username', data.username);
+                    if (data.role === 'student') {
+                        window.location.href = '/stHome.html?login=success';
+                    } else if (data.role === 'admin') {
+                        window.location.href = '/adHome.html?login=success';
+                    }
+                } else {
+                    alert('Login failed!');
+                }
+            } catch (error) {
+                alert('Login failed!');
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
